@@ -14,7 +14,7 @@ with open('abstract_L50.txt','r') as f:
         temp = row.translate(None,"\"").strip()
         dataset.append(temp)
 print len(dataset)
-#stoplist = set('for a of the and to in will be'.split())
+# stopword
 common = ['the','of','and','a','to','in','is','you','that','it',
            'he','was','for','on','are','as','with','his','they','i',
            'at','be','this','have','from','or','one','had','by','word',
@@ -28,7 +28,6 @@ common = ['the','of','and','a','to','in','is','you','that','it',
 
 stoplist = set(common)
 
-#texts = [[word for word in document.lower().split() if word not in stoplist] for document in dataset]
 def get_token(data):
     tokens = []
     for document in data:
@@ -40,12 +39,7 @@ def get_token(data):
 
 texts = get_token(documents)
 
-'''
-stoplist = []
-with open('stop-words.txt','r') as f:
-    for line in f:
-        stoplist.append(line.strip())
-'''
+
 print len(texts)
 all_tokens = {}
 for i in range(0,len(texts)):
@@ -62,8 +56,7 @@ tokens_once = []
 for term in all_tokens.keys():
     if all_tokens[term] == 1:
         tokens_once.append(term)
-#all_tokens = sum(texts,[])
-#tokens_once =set(word for word in set(all_tokens) if all_tokens.count(word) == 1)
+
 new_texts = []
 
 for text in texts:
@@ -72,7 +65,7 @@ for text in texts:
         if all_tokens.has_key(word):# and all_tokens[word] > 100:
             temp.append(word)
     new_texts.append(temp)
-#texts = [[word for word in text if word not in tokens_once] for text in texts]
+
 texts = new_texts
 print len(texts)
 dictionary = corpora.Dictionary(texts)
@@ -82,14 +75,11 @@ corpora.MmCorpus.serialize('temp/deerwester.mm', corpus)
 tfidf = models.TfidfModel(corpus)
 
 corpus_tfidf = tfidf[corpus]
-#lsi = ldamodel.LdaModel(bow_corpus, id2word=dictionary, num_topics = 5)
-#corpus_lsi = lsi[corpus_tfidf]
-#lda = gensim.models.ldamodel.LdaModel(corpus=corpus,id2word=dictionary, num_topics=150,  chunksize = 2000, passes = 1)
 print len(corpus)
 lda = gensim.models.LdaMallet('~/project/mallet-2.0.7/bin/mallet',corpus=corpus,num_topics = 5,id2word=dictionary,workers=4, iterations = 1000)#, alpha=1.0/150)
 
 topic2doc =  lda[corpus]
-#logfile = open('topic.txt','w')
+
 topic_list = lda.show_topics(num_topics=5, num_words=-1, formatted=False)
 toCSV = []
 for i in topic_list:
