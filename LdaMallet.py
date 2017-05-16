@@ -37,7 +37,7 @@ def get_token(data):
         tokens.append(temp)
     return tokens
 
-texts = get_token(documents)
+texts = get_token(dataset)
 
 
 print len(texts)
